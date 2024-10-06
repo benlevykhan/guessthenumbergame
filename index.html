@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0; /* Fallback color */
+            background-image: linear-gradient(135deg, #e1f5fe 25%, #90caf9 25%, #90caf9 50%, #e1f5fe 50%, #e1f5fe 75%, #90caf9 75%, #90caf9 100%);
+            background-size: 56.57px 56.57px; /* Size of the stripes */
+            color: black; /* Black text color */
+        }
+        h1 {
+            margin-top: 50px;
+            text-shadow: 0 0 0 white; /* White outline without shadow */
+            -webkit-text-stroke: 1px white; /* White outline */
+        }
+        p {
+            font-size: 1.5em; /* Increased font size for the paragraph */
+            font-weight: bold; /* Thicker font */
+            text-shadow: 0 0 0 white; /* White outline without shadow */
+            -webkit-text-stroke: 1px white; /* White outline */
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.3em;
+            text-shadow: 0 0 0 white; /* White outline without shadow */
+            -webkit-text-stroke: 1px white; /* White outline */
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 100px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+        #playAgainButton {
+            background-color: #008CBA; /* Blue background */
+        }
+        #playAgainButton:hover {
+            background-color: #007bb5; /* Darker blue on hover */
+        }
+        #twitterShare {
+            margin-top: 20px;
+            display: none; /* Hide until game is won */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Guess the Number Game!</h1>
+    <p>I'm thinking of a number between 1 and 100.</p>
+    <input type="number" id="guess" placeholder="Your guess" min="1" max="100">
+    <button onclick="checkGuess()">Guess!</button>
+    
+    <div id="result"></div>
+    <button id="playAgainButton" style="display: none;" onclick="playAgain()">Play Again</button>
+    <div id="twitterShare">
+        <a id="twitterLink" href="#" target="_blank">Share on Twitter</a>
+    </div>
+
+    <script>
+        let numberToGuess;
+        let attempts;
+
+        function startGame() {
+            numberToGuess = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('guess').value = '';
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('guess').disabled = false; // Enable input
+            document.getElementById('playAgainButton').style.display = 'none'; // Hide play again button
+            document.getElementById('twitterShare').style.display = 'none'; // Hide Twitter link
+        }
+
+        function checkGuess() {
+            const guess = parseInt(document.getElementById('guess').value);
+            const resultDiv = document.getElementById('result');
+            attempts++;
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                resultDiv.innerHTML = "Please enter a valid number between 1 and 100.";
+                return;
+            }
+
+            if (guess < numberToGuess) {
+                resultDiv.innerHTML = "Too low! Try again.";
+            } else if (guess > numberToGuess) {
+                resultDiv.innerHTML = "Too high! Try again.";
+            } else {
+                resultDiv.innerHTML = `Congratulations! You guessed the number ${numberToGuess} in ${attempts} attempts.`;
+                document.getElementById('guess').disabled = true; // Disable input after winning
+                document.getElementById('playAgainButton').style.display = 'inline'; // Show play again button
+                
+                // Prepare Twitter share link
+                const tweetText = `I just guessed the number ${numberToGuess} in ${attempts} attempts! Can you beat my score?`;
+                const twitterLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+                document.getElementById('twitterLink').setAttribute('href', twitterLink);
+                document.getElementById('twitterShare').style.display = 'block'; // Show Twitter link
+            }
+        }
+
+        function playAgain() {
+            startGame(); // Reset the game
+        }
+
+        // Start the game on page load
+        window.onload = startGame;
+    </script>
+
+</body>
+</html>
